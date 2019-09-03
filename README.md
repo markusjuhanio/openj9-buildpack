@@ -20,4 +20,11 @@ at the root of your project with following content
 ```
 adoptopenjdk.version=<version>  
 adoptopenjdk.release=<release>
+```  
+
+Default  values  
+
 ```
+adoptopenjdk.version=11 
+adoptopenjdk.release=latest
+```  
