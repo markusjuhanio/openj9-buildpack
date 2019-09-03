@@ -6,7 +6,7 @@ This buildpack installs the [AdoptOpenJDK](https://adoptopenjdk.net) with [Eclip
 Replace the default Heroku Java buildpack
 
 ```
-$ heroku buildpacks:set https://github.com/makeesi/openj9-buildpack.git  
+$ heroku buildpacks:set https://github.com/olnq/openj9-buildpack.git 
 $ heroku buildpacks:add heroku/java  
 $ git push heroku master
 ```
