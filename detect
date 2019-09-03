@@ -1,4 +1,0 @@
-#!/bin/sh
-
-echo "AdoptOpenJDK"
-exit 0
