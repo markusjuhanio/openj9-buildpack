@@ -1,6 +1,6 @@
 # OpenJ9 Buildpack
 
-This custom buildpack installs the [Eclipse OpenJ9 VM](https://www.eclipse.org/openj9) [AdoptOpenJDK11](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=openj9).
+This is a custom buildpack of [AdoptOpenJDK Buildpack](https://github.com/jkutner/adoptopenjdk-buildpack) which installs the [Eclipse OpenJ9 VM](https://www.eclipse.org/openj9) [AdoptOpenJDK11](https://adoptopenjdk.net/?variant=openjdk11&jvmVariant=openj9).
 
 # Usage
 Replace the default Heroku Java buildpack
