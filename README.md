@@ -21,3 +21,6 @@ at the root of your project with the following content
 adoptopenjdk.version=<version>  
 adoptopenjdk.release=<release>
 ```  
+
+# License
+MIT
