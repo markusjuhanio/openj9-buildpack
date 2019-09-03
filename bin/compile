@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+
+# fail fast
+set -e
+
+# parse args
+export BUILD_DIR=$1
+export CACHE_DIR=$2
+export ENV_DIR=$3
+
+source <(curl --retry 3 -fsSL "https://lang-common.s3.amazonaws.com/buildpack-stdlib/v8/stdlib.sh")
+
+export_env $ENV_DIR "."
+
+get_property() {
+  local propFile="$BUILD_DIR/system.properties"
+  local propName="${1:?}"
+  local propDefault="${2:-""}"
+
+  if [ -f ${propFile} ]; then
+    local propValue=$(sed '/^\#/d' ${propFile} | grep "${propName}"  | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+    echo "${propValue:-$propDefault}"
+  else
+    echo "${propDefault}"
+  fi
+}
+
+create_adoptopenjdk_url() {
+  local version="${1:-11}"
+  local impl="${2:-openj9}"
+  local release="${3:-latest}"
+  local heapsize="${4:-normal}"
+  echo "https://api.adoptopenjdk.net/v2/binary/nightly/openjdk${version}?openjdk_impl=${impl}&os=linux&arch=x64&heap_size=${heapsize}&release=${release}&type=jdk"
+}
+
+install_adoptopenjdk() {
+  local jdk_dir=${1:?}
+
+  rm -rf $jdk_dir # clobber any previously installed jdk
+  mkdir -p $jdk_dir
+
+  # parse version
+  local version="${ADOPTOPENJDK_VERSION:-$(get_property "adoptopenjdk.version" "11")}"
+  local impl="${ADOPTOPENJDK_IMPL:-$(get_property "adoptopenjdk.impl" "openj9")}"
+  local release="${ADOPTOPENJDK_RELEASE:-$(get_property "adoptopenjdk.release" "latest")}"
+  local version="${ADOPTOPENJDK_VERSION:-$(get_property "adoptopenjdk.heapsize" "normal")}"
+  local checksum="${ADOPTOPENJDK_CHECKSUM:-$(get_property "adoptopenjdk.checksum")}"
+
+  local url="$(create_adoptopenjdk_url "$version" "$impl" "$release" "$heapsize")"
+
+
+  echo "-----> Installing AdoptOpenJDK ${version} (${impl}, ${release})"
+  if [ -n "$checksum" ]; then
+    local jdk_downloaded_file="/tmp/jdk.tgz"
+    echo "       - downloading"
+    curl --retry 3 -o "$jdk_downloaded_file" -sL "$url"
+
+    echo "       - verifying checksum ($checksum)"
+    actual_sha_256="$(shasum -a 256 ${jdk_downloaded_file} | awk '{ print $1 }')"
+    if [ "$actual_sha_256" != "$checksum" ]; then
+      echo "Invalid checksum!"
+      echo "Expected => $checksum"
+      echo "Found    => $actual_sha_256"
+      exit 1
+    fi
+
+    echo "       - unpacking"
+    tar xzmf "$jdk_downloaded_file" -C "$jdk_dir" --strip-components=1
+  else
+    echo "       - downloading and unpacking"
+    curl --retry 3 -sL "$url" | tar xzm -C "$jdk_dir" --strip-components=1
+  fi
+
+  echo "       - pruning"
+  rm -rf "${jdk_dir}/demo"
+  rm -rf "${jdk_dir}/src.zip"
+  rm -rf "${jdk_dir}/sample"
+  rm -rf "${jdk_dir}/man"
+  rm -rf "${jdk_dir}/sample"
+  echo "       - done"
+}
+
+create_profile_scripts() {
+  local home=${1:?}
+  local url=${2:?}
+
+  mkdir -p $home/.profile.d
+
+  echo "-----> Configuring AdoptOpenJDK"
+  curl -o $home/.profile.d/adoptopenjdk.sh -sL "$url/opt/jvmcommon.sh"
+  curl -o $home/.profile.d/jdbc.sh -sL "$url/opt/jdbc.sh"
+  echo "       - done"
+}
+
+create_export_script() {
+  local jdk_dir=${1:?}
+  local home=${2:?}
+
+  if [ -w ${home} ]; then
+    cat << EOF > ${home}/export
+export JAVA_HOME=$jdk_dir
+export PATH=\$JAVA_HOME/bin:\$PATH
+export LD_LIBRARY_PATH="\$JAVA_HOME/jre/lib/amd64/server:\$LD_LIBRARY_PATH"
+EOF
+  fi
+}
+
+BP_DIR="$(cd "$(dirname "$0")" && pwd)"
+OPT_DIR=$BP_DIR/../opt/
+
+JDK_DIR="$BUILD_DIR/.jdk"
+JVM_COMMON_URL="https://raw.githubusercontent.com/heroku/heroku-buildpack-jvm-common/master/"
+
+install_adoptopenjdk "$JDK_DIR"
+create_profile_scripts "$BUILD_DIR" "$JVM_COMMON_URL"
+create_export_script "$JDK_DIR" "$(pwd)"
