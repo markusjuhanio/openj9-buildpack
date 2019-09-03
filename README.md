@@ -13,7 +13,7 @@ $ git push heroku master
 
 # Customizing
 
-Create file
+Create a file
 **system.properties**
 at the root of your project with the following content
 
