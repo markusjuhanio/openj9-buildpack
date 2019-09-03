@@ -18,6 +18,6 @@ Create file
 at the root of your project with following content
 
 ```
-adoptopenjdk.version=11  
-adoptopenjdk.release=latest
+adoptopenjdk.version=<version>  
+adoptopenjdk.release=<release>
 ```
