@@ -1,6 +1,6 @@
 # OpenJ9 Buildpack
 
-This buildpack installs the [AdoptOpenJDK11](https://adoptopenjdk.net) with [Eclipse OpenJ9](https://www.eclipse.org/openj9/).
+This custom buildpack installs the [AdoptOpenJDK11](https://adoptopenjdk.net) with [Eclipse OpenJ9](https://www.eclipse.org/openj9/).
 
 # Usage
 Replace the default Heroku Java buildpack
