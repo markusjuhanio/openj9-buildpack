@@ -19,6 +19,5 @@ at the root of your project with following content
 
 ```
 adoptopenjdk.version=11  
-adoptopenjdk.impl=openj9   
 adoptopenjdk.release=latest
 ```
