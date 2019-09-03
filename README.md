@@ -15,7 +15,7 @@ $ git push heroku master
 
 Create a file
 **system.properties**
-at the root of your project with the following content
+at the root of your project
 
 ```
 adoptopenjdk.version=<version>  
