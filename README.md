@@ -1,6 +1,6 @@
 # OpenJ9 Buildpack
 
-This buildpack installs the [AdoptOpenJDK](https://adoptopenjdk.net) with [Eclipse OpenJ9](https://www.eclipse.org/openj9/).
+This buildpack installs the [AdoptOpenJDK11](https://adoptopenjdk.net) with [Eclipse OpenJ9](https://www.eclipse.org/openj9/).
 
 # Usage
 Replace the default Heroku Java buildpack
@@ -20,11 +20,4 @@ at the root of your project with following content
 ```
 adoptopenjdk.version=<version>  
 adoptopenjdk.release=<release>
-```  
-
-Default  values  
-
-```
-adoptopenjdk.version=11 
-adoptopenjdk.release=latest
 ```  
