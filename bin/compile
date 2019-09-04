@@ -6,7 +6,7 @@ export BUILD_DIR=$1
 export CACHE_DIR=$2
 export ENV_DIR=$3
 
-source <(curl --retry 3 -fsSL "https://lang-common.s3.amazonaws.com/buildpack-stdlib/v7/stdlib.sh")
+source <(curl --retry 3 -fsSL "https://lang-common.s3.amazonaws.com/buildpack-stdlib/v8/stdlib.sh")
 
 export_env $ENV_DIR "."
 
