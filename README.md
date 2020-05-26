@@ -6,7 +6,7 @@ This is a custom buildpack of [AdoptOpenJDK Buildpack](https://github.com/jkutne
 Replace the default Heroku Java buildpack
 
 ```
-$ heroku buildpacks:set https://github.com/olnq/openj9-buildpack.git 
+$ heroku buildpacks:set https://github.com/maatuss/openj9-buildpack.git 
 $ heroku buildpacks:add heroku/java  
 $ git push heroku master
 ```
