@@ -103,7 +103,7 @@ BP_DIR="$(cd "$(dirname "$0")" && pwd)"
 OPT_DIR=$BP_DIR/../opt/
 
 JDK_DIR="$BUILD_DIR/.jdk"
-JVM_COMMON_URL="https://raw.githubusercontent.com/heroku/heroku-buildpack-jvm-common/master/"
+JVM_COMMON_URL="https://raw.githubusercontent.com/heroku/heroku-buildpack-jvm-common/main/"
 
 install_adoptopenjdk "$JDK_DIR"
 create_profile_scripts "$BUILD_DIR" "$JVM_COMMON_URL"
